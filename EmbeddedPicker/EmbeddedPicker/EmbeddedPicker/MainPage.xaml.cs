@@ -11,7 +11,15 @@ namespace EmbeddedPicker
 	{
 		public MainPage()
 		{
-			InitializeComponent();
+			try
+			{
+				InitializeComponent();
+			}
+			catch (Exception e)
+			{
+				var check = e.Message;
+			}
+			
 			this.BindingContext = new MainPageViewModel();
 		}
 	}

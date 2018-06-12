@@ -4,10 +4,13 @@
              xmlns:local="clr-namespace:EmbeddedPicker"
              x:Class="EmbeddedPicker.MainPage">
 
-    <StackLayout>
-        <!-- Place new controls here -->
-		<local:CustomPicker ItemsSource="{Binding PickerItemSource}" SelectedIndex="{Binding PickerIndex}" Margin="20" />
-		<Label Text="{Binding PickerItem}" />
+	<StackLayout BackgroundColor="White">
+		<Label Text="Custom Picker" FontAttributes="Bold" HorizontalOptions="Center" TextColor="Black" Margin="0,10,0,0" />
+		<Frame CornerRadius="1" HasShadow="False" BorderColor="Black" Padding="0" Margin="30,20">
+			<local:CustomPicker ItemsSource="{Binding PickerItemSource}" SelectedIndex="{Binding PickerIndex}" SelectorLineColor="Black" />
+		</Frame>
+		<Label Text="Currently Selected" FontAttributes="Bold" TextColor="Black" HorizontalOptions="Center" />
+		<Label Text="{Binding PickerItem}" HorizontalOptions="Center" TextColor="Black" />
     </StackLayout>
 
 </ContentPage>

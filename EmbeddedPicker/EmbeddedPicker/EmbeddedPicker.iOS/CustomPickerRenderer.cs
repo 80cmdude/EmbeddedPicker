@@ -21,19 +21,16 @@ namespace EmbeddedPicker.iOS
 		protected override void OnElementChanged(ElementChangedEventArgs<CustomPicker> e)
 		{
 			base.OnElementChanged(e);
-
-			var pickerView = Control;
-
+			
 			if (Control == null)
 			{
-				SetNativeControl(pickerView = new UIPickerView(RectangleF.Empty));
+				SetNativeControl(new UIPickerView(RectangleF.Empty));
 			}
 
-			if (e.NewElement != null)
-			{
-				UpdateItemsSource();
-				UpdateSelectedIndex();
-			}
+			if (e.NewElement == null) return;
+
+			UpdateItemsSource();
+			UpdateSelectedIndex();
 		}
 
 		protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -64,10 +61,10 @@ namespace EmbeddedPicker.iOS
 				Font.SystemFontOfSize(Element.FontSize) :
 				Font.OfSize(Element.FontFamily, Element.FontSize);
 			var nativeFont = font.ToUIFont();
-			Control.Model = new MyDataModel(this.Element.ItemsSource, row =>
+			Control.Model = new DataModel(this.Element.ItemsSource, row =>
 			{
 				Element.SelectedIndex = row;
-			}, nativeFont);
+			}, nativeFont, Element.CellHeight);
 		}
 
 		private void UpdateSelectedIndex()
@@ -86,16 +83,18 @@ namespace EmbeddedPicker.iOS
 		}
 	}
 
-	class MyDataModel : UIPickerViewModel
+	internal class DataModel : UIPickerViewModel
 	{
 		private readonly IList<string> _list = new List<string>();
 		private readonly Action<int> _selectedHandler;
 		private readonly UIFont _nativeFont;
+		private readonly nfloat _cellHeight;
 
-		public MyDataModel(IEnumerable items, Action<int> selectedHandler, UIFont nativeFont)
+		public DataModel(IEnumerable items, Action<int> selectedHandler, UIFont nativeFont, nfloat cellHeight)
 		{
 			_selectedHandler = selectedHandler;
 			_nativeFont = nativeFont;
+			_cellHeight = cellHeight;
 
 			if (items != null)
 			{
@@ -116,9 +115,10 @@ namespace EmbeddedPicker.iOS
 			return _list.Count;
 		}
 
+		// Update the height of each individual cell
 		public override nfloat GetRowHeight(UIPickerView pickerView, nint component)
 		{
-			return 40;
+			return _cellHeight;
 		}
 
 		public override string GetTitle(UIPickerView pickerView, System.nint row, System.nint component)
@@ -128,13 +128,13 @@ namespace EmbeddedPicker.iOS
 
 		public override UIView GetView(UIPickerView pickerView, nint row, nint component, UIView view)
 		{
-			UILabel label = new UILabel(pickerView.Bounds);
-			label.Font = _nativeFont;
-			label.Text = _list[(int)row];
-			label.TextAlignment = UITextAlignment.Center;
+			var label = new UILabel(pickerView.Bounds)
+			{
+				Font = _nativeFont,
+				Text = _list[(int) row],
+				TextAlignment = UITextAlignment.Center
+			};
 			return label;
-
-			//return base.GetView(pickerView, row, component, view);
 		}
 
 		public override void Selected(UIPickerView pickerView, nint row, nint component)

@@ -24,8 +24,6 @@ namespace EmbeddedPicker
 				"4",
 				"5",
 			};
-
-			//PickerItem = PickerItemSource[PickerIndex];
 		}
 	}
 }

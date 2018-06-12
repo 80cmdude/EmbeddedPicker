@@ -1,17 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-
-using Android.App;
 using Android.Content;
 using Android.Graphics;
 using Android.Graphics.Drawables;
-using Android.OS;
-using Android.Runtime;
 using Android.Util;
-using Android.Views;
 using Android.Widget;
 using Xamarin.Forms.Platform.Android;
 using EmbeddedPicker;
@@ -42,18 +35,17 @@ namespace EmbeddedPicker.Droid
 				Control.ValueChanged -= Control_ValueChanged;
 			}
 
-			if (e.NewElement != null)
-			{
-				Control.ValueChanged += Control_ValueChanged;
+			if (e.NewElement == null) return;
 
-				// This property controls if the picker wraps around in a circle inifintiely
-				Control.WrapSelectorWheel = false;
+			Control.ValueChanged += Control_ValueChanged;
 
-				UpdateItemsSource();
-				UpdateSelectedIndex();
-				UpdateFont();
-				SetDividerColor(Control, Element.SelectorLineColor.ToAndroid());
-			}
+			// This property controls if the picker wraps around in a circle inifintiely
+			Control.WrapSelectorWheel = e.NewElement.WrapSelectorWheel;
+				
+			UpdateItemsSource();
+			UpdateSelectedIndex();
+			UpdateFont();
+			SetDividerColor(Control, Element.SelectorLineColor.ToAndroid());
 		}
 
 		protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -90,34 +82,33 @@ namespace EmbeddedPicker.Droid
 
 			}
 
-			if (arr.Count > 0)
+			if (arr.Count <= 0) return;
+
+			var newMax = arr.Count - 1;
+			if (newMax < Control.Value)
 			{
-				int newMax = arr.Count - 1;
-				if (newMax < Control.Value)
-				{
-					Element.SelectedIndex = newMax;
-				}
+				Element.SelectedIndex = newMax;
+			}
 
-				var extend = Control.MaxValue <= newMax;
+			var extend = Control.MaxValue <= newMax;
 
-				if (extend)
-				{
-					Control.SetDisplayedValues(arr.ToArray());
-				}
+			if (extend)
+			{
+				Control.SetDisplayedValues(arr.ToArray());
+			}
 
-				Control.MaxValue = newMax;
-				Control.MinValue = 0;
+			Control.MaxValue = newMax;
+			Control.MinValue = 0;
 
-				if (!extend)
-				{
-					Control.SetDisplayedValues(arr.ToArray());
-				}
+			if (!extend)
+			{
+				Control.SetDisplayedValues(arr.ToArray());
 			}
 		}
 
 		private void UpdateSelectedIndex()
 		{
-			if (Element.SelectedIndex < Control.MinValue || Element.SelectedIndex >= Control.MaxValue)
+			if (Element.SelectedIndex < Control.MinValue || Element.SelectedIndex > Control.MaxValue)
 			{
 				return;
 			}
@@ -128,7 +119,7 @@ namespace EmbeddedPicker.Droid
 		/// <summary>
 		/// Updates the font family of each element in the picker
 		/// </summary>
-		void UpdateFont()
+		private void UpdateFont()
 		{
 			var font = string.IsNullOrEmpty(Element.FontFamily) ?
 				Font.SystemFontOfSize(Element.FontSize) :
@@ -147,24 +138,23 @@ namespace EmbeddedPicker.Droid
 		/// </summary>
 		private static void SetTextSize(NumberPicker numberPicker, Typeface fontFamily, float textSizeInSp)
 		{
-			int count = numberPicker.ChildCount;
-			for (int i = 0; i < count; i++)
+			var count = numberPicker.ChildCount;
+			for (var i = 0; i < count; i++)
 			{
 				var child = numberPicker.GetChildAt(i);
-				var editText = child as EditText;
 
-				if (editText != null)
+				if (child is EditText editText)
 				{
 					try
 					{
-						Field selectorWheelPaintField = numberPicker.Class
+						var selectorWheelPaintField = numberPicker.Class
 							.GetDeclaredField("mSelectorWheelPaint");
 						selectorWheelPaintField.Accessible = true;
 						((Paint)selectorWheelPaintField.Get(numberPicker)).TextSize = textSizeInSp;
 						editText.Typeface = fontFamily;
 						editText.SetTextSize(ComplexUnitType.Px, textSizeInSp);
 
-						// Need this property set to false or you can edit the elements in the picker :potatoe:
+						// Need this property set to false or you can edit the elements in the picker
 						editText.Focusable = false;
 
 						numberPicker.Invalidate();
@@ -191,9 +181,9 @@ namespace EmbeddedPicker.Droid
 				var dividerDraw = new ColorDrawable(color);
 				divider.Set(picker, dividerDraw);
 			}
-			catch
+			catch(Exception e)
 			{
-				// ignored
+				System.Diagnostics.Debug.WriteLine("SetNumberPickerDividerColor failed.", e);
 			}
 		}
 	}
