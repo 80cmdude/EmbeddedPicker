@@ -12,6 +12,7 @@ namespace EmbeddedPicker
 		public MainPage()
 		{
 			InitializeComponent();
+			this.BindingContext = new MainPageViewModel();
 		}
 	}
 }

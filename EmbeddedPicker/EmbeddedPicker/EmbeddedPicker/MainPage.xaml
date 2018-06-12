@@ -6,9 +6,8 @@
 
     <StackLayout>
         <!-- Place new controls here -->
-    	<Label Text="Welcome to Xamarin.Forms!" 
-           HorizontalOptions="Center"
-           VerticalOptions="CenterAndExpand" />
+		<local:CustomPicker ItemsSource="{Binding PickerItemSource}" SelectedIndex="{Binding PickerIndex}" Margin="20" />
+		<Label Text="{Binding PickerItem}" />
     </StackLayout>
 
 </ContentPage>
