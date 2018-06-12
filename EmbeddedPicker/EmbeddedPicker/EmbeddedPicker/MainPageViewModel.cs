@@ -5,12 +5,14 @@ using System.Text;
 
 namespace EmbeddedPicker
 {
-	public class MainPageViewModel
+	public class MainPageViewModel : INotifyPropertyChanged
 	{
+		public event PropertyChangedEventHandler PropertyChanged;
+
 		public List<string> PickerItemSource { get; set; }
 		public int PickerIndex { get; set; }
 
-		public string PickerItem { get; set; }
+		public string PickerItem => PickerItemSource[PickerIndex];
 
 		public MainPageViewModel()
 		{
@@ -23,7 +25,7 @@ namespace EmbeddedPicker
 				"5",
 			};
 
-			PickerItem = PickerItemSource[PickerIndex];
+			//PickerItem = PickerItemSource[PickerIndex];
 		}
 	}
 }
