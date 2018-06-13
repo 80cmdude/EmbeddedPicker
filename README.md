@@ -1,5 +1,5 @@
 # EmbeddedPicker
-Embedded page picker control for Xamarin.forms
+Embedded page picker control for Xamarin.forms for both Android and iOS
 
 ![Image](https://media.giphy.com/media/5ryhCdUhRSRjGnaSo6/giphy.gif)
 
