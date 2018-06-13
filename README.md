@@ -1,6 +1,8 @@
 # EmbeddedPicker
 Embedded page picker control for Xamarin.forms
 
+![Image](https://media.giphy.com/media/5ryhCdUhRSRjGnaSo6/giphy.gif)
+
 ## Getting Started
 This is a small sample project for xamarin.forms to show an example of an embedded picker inside a page of a xamarin forms application. Pull the project and run for either iOS or Android.
 
