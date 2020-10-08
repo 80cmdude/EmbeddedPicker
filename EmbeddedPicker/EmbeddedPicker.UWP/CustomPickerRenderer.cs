@@ -1,20 +1,21 @@
 ﻿using EmbeddedPicker;
 using EmbeddedPicker.UWP;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Xamarin.Forms.Internals;
 using Xamarin.Forms.Platform.UWP;
+using XF = Xamarin.Forms;
 
 [assembly: ExportRenderer(typeof(CustomPicker), typeof(CustomPickerRenderer))]
 namespace EmbeddedPicker.UWP {
-	public class CustomPickerRenderer : ViewRenderer<CustomPicker, ComboBox> {
+	public class CustomPickerRenderer : ViewRenderer<CustomPicker, ListBox> {
 		protected override void OnElementChanged(ElementChangedEventArgs<CustomPicker> e) {
 			base.OnElementChanged(e);
 
 			if (Control is null) {
-				SetNativeControl(new ComboBox());
+				SetNativeControl(new ListBox());
 			} else {
 				Control.SelectionChanged -= Control_SelectionChanged;
 			}
@@ -43,21 +44,20 @@ namespace EmbeddedPicker.UWP {
 			}
 		}
 
-		private void UpdateItemsSource() =>
-			Control.ItemsSource = Element.ItemsSource;
+		private void UpdateItemsSource() => Control.ItemsSource = Element.ItemsSource;
 
-		private void UpdateSelectedIndex() =>
-			Control.SelectedIndex = Element.SelectedIndex;
+		private void UpdateSelectedIndex() => Control.SelectedIndex = Element.SelectedIndex;
 
 		/// <summary>
 		/// Updates the font family of each element in the picker
 		/// </summary>
 		private void UpdateFont() {
-			//var font = string.IsNullOrEmpty(Element.FontFamily) ?
-			//	Font.SystemFontOfSize(Element.FontSize) :
-			//	Font.OfSize(Element.FontFamily, Element.FontSize);
+			var font = string.IsNullOrEmpty(Element.FontFamily) ?
+				XF.Font.SystemFontOfSize(Element.FontSize) :
+				XF.Font.OfSize(Element.FontFamily, Element.FontSize);
 
-			//SetTextSize(Control, font.ToTypeface(), (float)(Element.FontSize * Context.Resources.DisplayMetrics.Density));
+			Control.ApplyFont(font);
+			Control.FontSize = Element.FontSize;
 		}
 
 		void Control_SelectionChanged(object sender, SelectionChangedEventArgs e) {
@@ -65,33 +65,5 @@ namespace EmbeddedPicker.UWP {
 				item => item.ToString() == e.AddedItems[0].ToString()
 			);
 		}
-
-		/// <summary>
-		/// Sets the text decoration of the individual elements of the picker
-		/// </summary>
-		//private static void SetTextSize(ComboBox comboBox, Typeface fontFamily, float textSizeInSp) {
-		//	var count = comboBox.ChildCount;
-		//	for (var i = 0; i < count; i++) {
-		//		var child = comboBox.GetChildAt(i);
-
-		//		if (child is EditText editText) {
-		//			try {
-		//				var selectorWheelPaintField = comboBox.Class
-		//					.GetDeclaredField("mSelectorWheelPaint");
-		//				selectorWheelPaintField.Accessible = true;
-		//				((Paint)selectorWheelPaintField.Get(comboBox)).TextSize = textSizeInSp;
-		//				editText.Typeface = fontFamily;
-		//				editText.SetTextSize(ComplexUnitType.Px, textSizeInSp);
-
-		//				// Need this property set to false or you can edit the elements in the picker
-		//				editText.Focusable = false;
-
-		//				comboBox.Invalidate();
-		//			} catch (Exception e) {
-		//				System.Diagnostics.Debug.WriteLine("SetNumberPickerTextColor failed.", e);
-		//			}
-		//		}
-		//	}
-		//}
 	}
 }
