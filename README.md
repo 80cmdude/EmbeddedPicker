@@ -39,6 +39,8 @@ Float property that sets the height of each individual item in the list. This pr
 My code is far from perfect so please feel free to raise pull requests or submit tickets so that I can improve if needed :)
 
 ## Acknowledgements
-I originally came across this project by amay077 [link](https://github.com/amay077/Xamarin_Forms_PickerViewSample) after searching for hours. From here I have created a simpler but more customisable picker. However if you want a multiple rowed picker then the one on that link is fantastic.
+I originally came across this project by amay077 [link](https://github.com/amay077/Xamarin_Forms_PickerViewSample) after searching for hours. From here I have created a simpler but more customisable picker. However if you want a multiple rowed picker then the one on that link is fantastic.  
+
+Thanks to https://github.com/djordje200179 for the UWP implementation :) 
 
 I hope this helps :)
